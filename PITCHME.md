@@ -1,6 +1,6 @@
 #HSLIDE
 
-# Agenda
+### Agenda
 
 - Thread management (creation, scheduling)
 - Thread synchronization
@@ -8,7 +8,7 @@
 
 #HSLIDE
 
-# Thread Management
+### Thread Management
 
 ![Thread Group Hierarchy](http://images.techhive.com/images/idge/imported/article/jvw/2002/08/jw-0802-java101-100157075-orig.gif)
 
@@ -16,7 +16,7 @@
 
 #HSLIDE
 
-# Thread.class
+### Thread.class
 
 - implements Runnable
 
@@ -24,6 +24,6 @@
 
 #HSLIDE
 
-## Resources
+### Resources
 
 - [Java Thread Groups](http://www.javaworld.com/article/2074481/java-concurrency/java-101--understanding-java-threads--part-4---thread-groups--volatility--and-threa.html)
