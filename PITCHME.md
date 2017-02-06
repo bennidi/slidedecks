@@ -14,15 +14,20 @@
 
 #HSLIDE
 
-### Thread Management: States
+### Thread Management: States (1/2)
 
-A thread can be in one of the following states:
-- NEW A thread that has not yet started. `Thread thread = new Thread(runnable);`
-- RUNNABLE A thread executing in the Java virtual machine is `thread.start();`
-- BLOCKED A thread that is blocked waiting for a monitor lock  `synchronized(){makeFunOfTrump();}`
-- WAITING A thread that is waiting indefinitely for another thread to perform a particular action. `monitor.wait()`
-- TIMED_WAITING A thread that is waiting for another thread to perform an action for up to a specified waiting time `monitor.wait(timeout)`
-- TERMINATED The thread has terminated. Either because (a) its run method returned or (b) the thread was interrupted/stopped (unexpected thread death)
+- **NEW** A thread that has not yet started.  
+`Thread thread = new Thread(runnable);`
+- **RUNNABLE** A thread executing in the Java virtual machine is `thread.start();`
+- **BLOCKED** A thread that is blocked waiting for a monitor lock  `synchronized(){makeFunOfTrump();}`
+- **WAITING** A thread that is waiting indefinitely for another thread to perform a particular action. `monitor.wait()`
+
+#HSLIDE
+
+### Thread Management: States (2/2)
+
+- **TIMED_WAITING** A thread that is waiting for another thread to perform an action for up to a specified waiting time `monitor.wait(timeout)`
+- **TERMINATED** The thread has terminated. Either because (a) its run method returned or (b) the thread was interrupted/stopped (unexpected thread death)
 
 > NOTE: Many 'inaccurate/wrong' diagrams on the web. Source of truths is https://docs.oracle.com/javase/7/docs/api/java/lang/Thread.State.html
 
@@ -42,12 +47,6 @@ A thread can be in one of the following states:
 - When main thread dies all sub-threads will die, too
 - When sub-thread is not running as daemon its parent will wait for it to `join()`
 
-
-#HSLIDE
-
-### Thread Management: Thread States (2/2)
-
-![Thread States: State Machine](http://booxs.biz/images/java/thread-states.png)
 
 #HSLIDE
 
