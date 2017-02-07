@@ -7,30 +7,33 @@
   - Thread Lifecycle (NEW -> ... -> TERMINATED)
   - Thread Groups
 - x86 and Java Memory Model
-  - x86 Memory Architecture of modern CPUs
+  - x86 Memory Architecture
   - Java Memory Model
-- Thread communication (#notify,#notifyAll, #wait)
+  - The double-checked locking idiom
+- Thread communication / synchronization
+- Code Examples
 
 #HSLIDE
 
 ### Thread Management: States (1/2)
 
-- **NEW** A thread that has not yet started.  
+A thread in state 
+- **NEW** -> has not yet started.  
 `Thread thread = new Thread(runnable);`
-- **RUNNABLE** A thread executing in the Java virtual machine  
+- **RUNNABLE** -> isexecuting in the JVM  
 `thread.start();`
-- **BLOCKED** A thread that is blocked waiting for a monitor lock  
+- **BLOCKED** -> is blocked waiting for a monitor lock  
 `synchronized(){makeFunOfTrump();}`
 
 
 #HSLIDE
 
 ### Thread Management: States (2/2)
-
-- **WAITING** A thread that is waiting indefinitely to be notified by another thread  
+A thread in state 
+- **WAITING** is waiting indefinitely to be notified by another thread  
 `monitor.wait()`
-- **TIMED_WAITING** A thread that is waiting for another thread to be notified by another thread `monitor.wait(timeout)`
-- **TERMINATED** The thread has terminated. Either because (a) its run method returned or (b) the thread was interrupted/stopped (unexpected thread death)
+- **TIMED_WAITING** is waiting for another thread to be notified by another thread `monitor.wait(timeout)`
+- **TERMINATED** has terminated. Either because (a) its run method returned or (b) the thread was interrupted/stopped (unexpected thread death)
 
 > NOTE: Many 'inaccurate/wrong' diagrams on the web. Source of truths is https://docs.oracle.com/javase/7/docs/api/java/lang/Thread.State.html
 
@@ -79,7 +82,7 @@
 
 #HSLIDE
 
-### Fixing the double checked locking idiom
+### Fixing the double checked locking idiom (1/2)
 
 ```java
 
@@ -102,29 +105,29 @@ class Foo {
 
 #HSLIDE
 
-### Fixing the double checked locking idiom
+### Fixing the double checked locking idiom (1/2)
 
 - If the compiler inlines the call to the constructor, then the writes that initialize the object and the write to the helper field can be freely reordered if the compiler can prove that the constructor cannot throw an exception or perform synchronization.  
 
 - [Initialization-on-demand holder idiom](https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom)
   
 
+#HSLIDE
+
+### Thread communication / synchronization
+
+- Based on **monitors** 
+- Object: #wait() #wait(long) #notify() #notifyAll()
+- Best explained by [Object#wait() JavaDoc](https://docs.oracle.com/javase/7/docs/api/java/lang/Object.html#wait(long)
+
 
 #HSLIDE
 
-### Java Code Examples
+### Code Examples
 
 
 - Manual Thread Handling: AccengagePushThread.java in EMS
 - 
-
-
-#HSLIDE
-
-### Thread communication
-
-- Object: #wait() #wait(long) #notify() #notifyAll()
-- Best explained by [Object#wait() JavaDoc](https://docs.oracle.com/javase/7/docs/api/java/lang/Object.html#wait(long)
 
 
 #HSLIDE
