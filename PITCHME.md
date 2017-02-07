@@ -15,7 +15,7 @@
 
 #HSLIDE
 
-### Thread Management: States (1/2)
+### Thread States (1/2)
 
 A thread in state 
 - **NEW** -> has not yet started.  
@@ -28,7 +28,7 @@ A thread in state
 
 #HSLIDE
 
-### Thread Management: States (2/2)
+### Thread States (2/2)
 A thread in state 
 - **WAITING** is waiting indefinitely to be notified by another thread  
 `monitor.wait()`
@@ -39,28 +39,30 @@ A thread in state
 
 #HSLIDE
 
-### Thread Management: Lifecycle
+### Thread Lifecycle
 
 ![Thread States:State Machine](http://booxs.biz/images/java/thread-states.png)
 
 
 #HSLIDE
 
-### Thread Management: Thread Groups
+### Thread Groups
 
 ![Thread Group Hierarchy](http://images.techhive.com/images/idge/imported/article/jvw/2002/08/jw-0802-java101-100157075-orig.gif)
 
-- When main thread dies all sub-threads will die, too
-- When sub-thread is not running as daemon its parent will wait for it to `join()`
+- Main thread dies -> sub-threads die, too
+- If sub-thread is not daemon its parent will wait for it
 
 
 #HSLIDE
 
 ### x86 Memory Architecture (1/2)
 
-- RAM is slow! Modern CPUs and JIT compilers employ many techniques to avoid access to to main memory.
-  - L2, L2, L3 caches to have content that is likely to be accessed close to CPU
-  - Instruction pipeline reordering to reduce idle times while going to memory (hide memory latency)
+> **RAM is slow!** CPUs / JIT compilers employ many techniques to **hide memory latency**.
+
+- L2, L2, L3 caches keep data that is likely to be accessed close to CPU
+- Instruction pipeline reordering
+- Optimization techniques: Cache Line Padding, Predictable Memory Patterns
 
 #HSLIDE
 
@@ -139,7 +141,10 @@ class Foo {
   - [Thread States: Oracle JavaDoc (the truth)](https://docs.oracle.com/javase/7/docs/api/java/lang/Thread.State.html)
   - [Incorrect explanation of thread life-cycle](http://javabook1.blogspot.de/2014/01/thread-life-cycle-in-java.html): Missing state runnable, state ready does not exists, missing state waiting
   - [SO on spurious Wake-Ups](http://stackoverflow.com/questions/1050592/do-spurious-wakeups-actually-happen)
-
+- Java Memory Model
+  - [CPU Cache Flushing Fallacy](https://mechanical-sympathy.blogspot.de/2013/02/cpu-cache-flushing-fallacy.html)
+  - [Memory Access Patterns Are Important](https://mechanical-sympathy.blogspot.de/2012/08/memory-access-patterns-are-important.html)
+  - [Memory Barriers/Fences](https://mechanical-sympathy.blogspot.de/2011/07/memory-barriersfences.html)
 - [Java Thread Groups](http://www.javaworld.com/article/2074481/java-concurrency/java-101--understanding-java-threads--part-4---thread-groups--volatility--and-threa.html)
 - Thread Synchronization
   - [Fixing the double checked locking idiom](https://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html)
