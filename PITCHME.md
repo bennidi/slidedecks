@@ -33,9 +33,7 @@ A thread in state
 - **WAITING** is waiting indefinitely to be notified by another thread  
 `monitor.wait()`
 - **TIMED_WAITING** is waiting to be notified by another thread `monitor.wait(timeout)`
-- **TERMINATED** has exited. Either because (a) its run method returned or (b) the thread was interrupted/stopped (unexpected thread death)
-
-> NOTE: Many 'inaccurate/wrong' diagrams on the web. Source of truths is https://docs.oracle.com/javase/7/docs/api/java/lang/Thread.State.html
+- **TERMINATED** has finished. Either because (a) its run method returned successfully or (b) the thread was interrupted/stopped (unexpected thread death)
 
 #HSLIDE
 
@@ -50,9 +48,17 @@ A thread in state
 
 ![Thread Group Hierarchy](http://images.techhive.com/images/idge/imported/article/jvw/2002/08/jw-0802-java101-100157075-orig.gif)
 
-- Main thread dies -> sub-threads die, too
-- If sub-thread is not daemon its parent will wait for it
+- Main thread dies -> sub-threads die
+- If sub-thread is not daemon -> parent will wait
 
+
+#HSLIDE
+
+### x86 and Java Memory Model
+
+- x86 Memory Architecture
+- Java Memory Model
+- The double-checked locking idiom
 
 #HSLIDE
 
@@ -60,9 +66,13 @@ A thread in state
 
 > **RAM is slow!** CPUs / JIT compilers employ many techniques to **hide memory latency**.
 
+
+#HSLIDE
+
+### x86 Memory Architecture
+  
 - L2, L2, L3 caches keep data that is likely to be accessed close to CPU
 - Instruction pipeline reordering
-- Optimization techniques: Cache Line Padding, Predictable Memory Patterns
 
 #HSLIDE
 
@@ -75,27 +85,28 @@ A thread in state
 
 - It's about visibility/consistency of data modifications
 - Control structures to enforce **Happens Before Relationship** (guaranteed ordering of operations that modify memory content)
-- `sfence`: A store barrier forces all store instructions prior to the barrier to happen before the barrier. Store buffer is flushed to cache => program state visible to other CPUs
-
-
 
 #HSLIDE
 
-### Java Memory Model (1/2)
+### Memory Barriers
 
+- `sfence`: A store barrier forces all store instructions prior to the barrier to happen before the barrier. Store buffer is flushed to cache => program state visible to other CPUs
 - `lfence`: A load barrier forces all load instructions after the barrier to happen after the barrier. Wait on the load buffer to drain for that CPU => program state exposed from other CPUs becomes visible to this CPU
+
+#HSLIDE
+
+### Memory Barriers
+
 - `volatile`: sfence after write, lfence before read
 - `synchronized` : Employ memory locks to the whole memory subsystem. That's why its slow.
 
 
 #HSLIDE
 
-### Fixing the double checked locking idiom
+### Fixing double-checked locking
 
 ```java
 
-// Broken multithreaded version
-// "Double-Checked Locking" idiom
 // Correct multithreaded version
 class Foo { 
   private Helper helper = null;
@@ -112,7 +123,7 @@ class Foo {
 
 #HSLIDE
 
-### Fixing the double checked locking idiom
+### Fixing double-checked locking
 
 ```java
 
@@ -135,22 +146,50 @@ class Foo {
 
 #HSLIDE
 
-### Fixing the double checked locking idiom
+### Why is it broken?
 
 If the compiler inlines the call to the constructor, then the writes that initialize the object and the write to the helper field can be freely reordered if the compiler can prove that the constructor cannot throw an exception or perform synchronization.  
 
-- `private Helper helper = null;`
+
 
 - [Initialization-on-demand holder idiom](https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom)
   
+  
+### Possible fixes
+ 
+- `private volatile Helper helper = null;`
+
+```java
+
+public class Helper {
+    private Helper() {}
+
+    private static class LazyHolder {
+        private static final Helper INSTANCE = new Helper();
+    }
+
+    public static Helper getInstance() {
+        return LazyHolder.INSTANCE;
+    }
+}
+
+```
 
 #HSLIDE
 
 ### Thread communication / synchronization
 
-- Based on **monitors** 
+- Based on **monitors**
 - Object: #wait() #wait(long) #notify() #notifyAll()
-- Best explained by [Object#wait() JavaDoc](https://docs.oracle.com/javase/7/docs/api/java/lang/Object.html#wait(long)
+
+
+#HSLIDE
+
+![Java Monitors](http://www.artima.com/insidejvm/ed2/images/fig20-1.gif)
+
+#HSLIDE
+
+- Let's read the [Object#wait() JavaDoc](https://docs.oracle.com/javase/7/docs/api/java/lang/Object.html#wait(long)
 
 
 #HSLIDE
@@ -158,8 +197,8 @@ If the compiler inlines the call to the constructor, then the writes that initia
 ### Code Examples
 
 
-- Manual Thread Handling: AccengagePushThread.java in EMS
-- 
+- Manual Thread Handling of AccengagePushThread.java in EMS
+- Token Renewal Synchronization in AccengagePushNotificationHandler.java
 
 
 #HSLIDE
