@@ -18,11 +18,11 @@
 ### Thread States (1/2)
 
 A thread in state 
-- **NEW** -> has not yet started.  
+- **NEW** has not yet started.  
 `Thread thread = new Thread(runnable);`
-- **RUNNABLE** -> isexecuting in the JVM  
+- **RUNNABLE** is executing in the JVM  
 `thread.start();`
-- **BLOCKED** -> is blocked waiting for a monitor lock  
+- **BLOCKED** is blocked waiting for a monitor lock  
 `synchronized(){makeFunOfTrump();}`
 
 
@@ -32,8 +32,8 @@ A thread in state
 A thread in state 
 - **WAITING** is waiting indefinitely to be notified by another thread  
 `monitor.wait()`
-- **TIMED_WAITING** is waiting for another thread to be notified by another thread `monitor.wait(timeout)`
-- **TERMINATED** has terminated. Either because (a) its run method returned or (b) the thread was interrupted/stopped (unexpected thread death)
+- **TIMED_WAITING** is waiting to be notified by another thread `monitor.wait(timeout)`
+- **TERMINATED** has exited. Either because (a) its run method returned or (b) the thread was interrupted/stopped (unexpected thread death)
 
 > NOTE: Many 'inaccurate/wrong' diagrams on the web. Source of truths is https://docs.oracle.com/javase/7/docs/api/java/lang/Thread.State.html
 
@@ -56,7 +56,7 @@ A thread in state
 
 #HSLIDE
 
-### x86 Memory Architecture (1/2)
+### x86 Memory Architecture
 
 > **RAM is slow!** CPUs / JIT compilers employ many techniques to **hide memory latency**.
 
@@ -66,17 +66,23 @@ A thread in state
 
 #HSLIDE
 
-### x86 Memory Architecture (1/2)
-
 ![x86 Memory Architecture](http://2.bp.blogspot.com/-aX64aN8wOTE/Tixd9Y4X-4I/AAAAAAAAAAg/FgM0HWTCbUI/s1600/cpu.png)
 
 
 #HSLIDE
 
-### Java Memory Model
+### Java Memory Model (1/2)
 
-- Controlling JIT optimizations by enforcing **Happens Before Relationship** (guaranteed ordering of operations that modify memory content)
+- It's about visibility/consistency of data modifications
+- Control structures to enforce **Happens Before Relationship** (guaranteed ordering of operations that modify memory content)
 - `sfence`: A store barrier forces all store instructions prior to the barrier to happen before the barrier. Store buffer is flushed to cache => program state visible to other CPUs
+
+
+
+#HSLIDE
+
+### Java Memory Model (1/2)
+
 - `lfence`: A load barrier forces all load instructions after the barrier to happen after the barrier. Wait on the load buffer to drain for that CPU => program state exposed from other CPUs becomes visible to this CPU
 - `volatile`: sfence after write, lfence before read
 - `synchronized` : Employ memory locks to the whole memory subsystem. That's why its slow.
@@ -84,7 +90,29 @@ A thread in state
 
 #HSLIDE
 
-### Fixing the double checked locking idiom (1/2)
+### Fixing the double checked locking idiom
+
+```java
+
+// Broken multithreaded version
+// "Double-Checked Locking" idiom
+// Correct multithreaded version
+class Foo { 
+  private Helper helper = null;
+  public synchronized Helper getHelper() {
+    if (helper == null) 
+        helper = new Helper();
+    return helper;
+    }
+  // other functions and members...
+  }
+
+```
+
+
+#HSLIDE
+
+### Fixing the double checked locking idiom
 
 ```java
 
@@ -107,9 +135,11 @@ class Foo {
 
 #HSLIDE
 
-### Fixing the double checked locking idiom (1/2)
+### Fixing the double checked locking idiom
 
-- If the compiler inlines the call to the constructor, then the writes that initialize the object and the write to the helper field can be freely reordered if the compiler can prove that the constructor cannot throw an exception or perform synchronization.  
+If the compiler inlines the call to the constructor, then the writes that initialize the object and the write to the helper field can be freely reordered if the compiler can prove that the constructor cannot throw an exception or perform synchronization.  
+
+- `private Helper helper = null;`
 
 - [Initialization-on-demand holder idiom](https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom)
   
